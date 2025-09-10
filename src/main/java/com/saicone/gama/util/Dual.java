@@ -58,62 +58,142 @@ public class Dual<A, B> {
     private A left;
     private B right;
 
+    /**
+     * Constructs an empty dual object.
+     */
     public Dual() {
         this(null, null);
     }
 
+    /**
+     * Constructs a dual object with the given parameters.
+     *
+     * @param left  the object at left position.
+     * @param right the object at right position.
+     */
     public Dual(@Nullable A left, @Nullable B right) {
         this.left = left;
         this.right = right;
     }
 
+    /**
+     * Get the object at left position.
+     *
+     * @return the object at left position.
+     */
     public A getLeft() {
         return left;
     }
 
+    /**
+     * Get the object at left position, or the object at right position if left is null.
+     *
+     * @return the object at left position if exists, otherwise the object at right position.
+     */
     public Object getLeftOrRight() {
         return getLeft() != null ? getLeft() : getRight();
     }
 
+    /**
+     * Get the object at right position.
+     *
+     * @return the object at right position.
+     */
     public B getRight() {
         return right;
     }
 
+    /**
+     * Get the object at right position, or the object at left position if right is null.
+     *
+     * @return the object at right position if exists, otherwise the object at left position.
+     */
     public Object getRightOrLeft() {
         return getRight() != null ? getRight() : getLeft();
     }
 
+    /**
+     * Set the object at left position.
+     *
+     * @param left the object to set at left position.
+     */
     public void setLeft(@Nullable A left) {
         this.left = left;
     }
 
+    /**
+     * Set the object at right position.
+     *
+     * @param right the object to set at right position.
+     */
     public void setRight(@Nullable B right) {
         this.right = right;
     }
 
+    /**
+     * Check if the current object is empty.
+     *
+     * @return true if both left and right objects are null.
+     */
     public boolean isEmpty() {
         return getLeft() == null && getRight() == null;
     }
 
+    /**
+     * Join the left and right objects as strings with the given delimiter.
+     *
+     * @param delimiter the delimiter to join the strings.
+     * @return          a string with the left and right objects joined by the delimiter.
+     */
     @NotNull
     public String join(@NotNull String delimiter) {
         return getLeft() + delimiter + getRight();
     }
 
+    /**
+     * Squash the current dual object into a single object using the given function.
+     *
+     * @param consumer the function to apply to the left and right objects.
+     * @return         the result of the function applied to the left and right objects.
+     * @param <R>      the type of the resulting object.
+     */
     public <R> R map(@NotNull BiFunction<A, B, R> consumer) {
         return consumer.apply(getLeft(), getRight());
     }
 
+    /**
+     * Map the left and right objects to new objects using the given functions.
+     *
+     * @param leftFunction  the function to apply to the left object.
+     * @param rightFunction the function to apply to the right object.
+     * @return              a new dual object with the mapped left and right objects.
+     * @param <L>           the type of the new left object.
+     * @param <R>           the type of the new right object.
+     */
     @NotNull
     public <L, R> Dual<L, R> map(@NotNull Function<A, L> leftFunction, @NotNull Function<B, R> rightFunction) {
         return new Dual<>(leftFunction.apply(getLeft()), rightFunction.apply(getRight()));
     }
 
+    /**
+     * Map only the left object to a new object using the given function.
+     *
+     * @param leftFunction the function to apply to the left object.
+     * @return             a new dual object with the mapped left object and the original right object.
+     * @param <L>          the type of the new left object.
+     */
     @NotNull
     public <L> Dual<L, B> mapLeft(@NotNull Function<A, L> leftFunction) {
         return new Dual<>(leftFunction.apply(getLeft()), getRight());
     }
 
+    /**
+     * Map only the right object to a new object using the given function.
+     *
+     * @param rightFunction the function to apply to the right object.
+     * @return              a new dual object with the original left object and the mapped right object.
+     * @param <R>           the type of the new right object.
+     */
     @NotNull
     public <R> Dual<A, R> mapRight(@NotNull Function<B, R> rightFunction) {
         return new Dual<>(getLeft(), rightFunction.apply(getRight()));
@@ -138,23 +218,17 @@ public class Dual<A, B> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) {
-            return Objects.equals(getLeft(), o) || Objects.equals(getRight(), o);
-        }
+    public final boolean equals(Object o) {
+        if (!(o instanceof Dual)) return false;
 
-        return equals((Dual<?, ?>) o);
-    }
-
-    public boolean equals(@NotNull Dual<?, ?> dual) {
+        Dual<?, ?> dual = (Dual<?, ?>) o;
         return Objects.equals(getLeft(), dual.getLeft()) && Objects.equals(getRight(), dual.getRight());
     }
 
     @Override
     public int hashCode() {
-        int result = getLeft() != null ? getLeft().hashCode() : 0;
-        result = 31 * result + (getRight() != null ? getRight().hashCode() : 0);
+        int result = Objects.hashCode(getLeft());
+        result = 31 * result + Objects.hashCode(getRight());
         return result;
     }
 }
