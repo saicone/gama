@@ -12,8 +12,8 @@
     <a href="https://github.com/saicone/gama">
         <img src="https://img.shields.io/github/languages/code-size/saicone/gama?logo=github&logoColor=white&style=flat-square"/>
     </a>
-    <a href="https://mvnrepository.com/artifact/com.saicone.gama/gama">
-        <img src="https://img.shields.io/maven-central/v/com.saicone.gama/gama"/>
+    <a href="https://mvnrepository.com/artifact/com.saicone/gama">
+        <img src="https://img.shields.io/maven-central/v/com.saicone/gama"/>
     </a>
     <a href="https://javadoc.saicone.com/gama/">
         <img src="https://img.shields.io/badge/JavaDoc-Online-green?style=flat-square"/>
@@ -21,3 +21,44 @@
 </p>
 
 A collection of java code for general purposes.
+
+No usage documentation, only javadocs are provided.
+
+## Dependency
+
+build.gradle
+
+```groovy
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.saicone:gama:1.0.0'
+}
+```
+
+build.gradle.kts
+
+```kotlin
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("com.saicone:gama:1.0.0")
+}
+```
+
+pom.xml
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>com.saicone</groupId>
+        <artifactId>gama</artifactId>
+        <version>1.0.0</version>
+        <scope>compile</scope>
+    </dependency>
+</dependencies>
+```
