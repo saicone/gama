@@ -19,16 +19,45 @@ import java.util.function.Function;
  */
 public class Dual<A, B> {
 
+    /**
+     * Creates a new dual object with the given parameters.
+     *
+     * @param a the object at left position.
+     * @param b the object at right position.
+     * @return  a newly generated dual object.
+     * @param <A> the object type at left position.
+     * @param <B> the object type at right position.
+     */
     @NotNull
     public static <A, B> Dual<A, B> valueOf(@Nullable A a, @Nullable B b) {
         return new Dual<>(a, b);
     }
 
+    /**
+     * Creates a new dual object from the given map entry.
+     *
+     * @param entry the map entry to create the dual object from.
+     * @return      a newly generated dual object.
+     * @param <A>   the object type at left position.
+     * @param <B>   the object type at right position.
+     */
     @NotNull
     public static <A, B> Dual<A, B> valueOf(@NotNull Map.Entry<A, B> entry) {
         return new Dual<>(entry.getKey(), entry.getValue());
     }
 
+    /**
+     * Creates a new dual object from the given array.
+     * <ul>
+     *     <li>If the array is null or empty, an empty dual object is returned.</li>
+     *     <li>If the array has one element, a dual object with the first element and null is returned.</li>
+     *     <li>If the array has two or more elements, a dual object with the first two elements is returned.</li>
+     * </ul>
+     *
+     * @param array the array to create the dual object from.
+     * @return      a newly generated dual object.
+     * @param <T>   the object type at both positions.
+     */
     @NotNull
     public static <T> Dual<T, T> valueOf(@Nullable T[] array) {
         if (array == null || array.length < 1) {
@@ -40,6 +69,17 @@ public class Dual<A, B> {
         }
     }
 
+    /**
+     * Creates a new dual object by applying the given functions to the given object.
+     *
+     * @param t the object to apply the functions to.
+     * @param a the function to apply to get the left object.
+     * @param b the function to apply to get the right object.
+     * @return  a newly generated dual object.
+     * @param <T> the type of the input object.
+     * @param <A> the object type at left position.
+     * @param <B> the object type at right position.
+     */
     @NotNull
     public static <T, A, B> Dual<A, B> valueOf(@NotNull T t, @NotNull Function<T, A> a, @NotNull Function<T, B> b) {
         return new Dual<A, B>() {

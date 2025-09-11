@@ -150,7 +150,7 @@ public interface LabeledList<L, E> extends List<E> {
      *
      * @param index the index of the element whose label is to be returned
      * @return      the label associated with the element at the specified position
-     * @throws IndexOutOfBoundsException if the index is out of range (index < 0 || index >= size())
+     * @throws IndexOutOfBoundsException if the index is out of range ({@code index < 0 || index >= size()})
      */
     @NotNull
     L getLabel(int index);
