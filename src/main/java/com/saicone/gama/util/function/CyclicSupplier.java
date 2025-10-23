@@ -49,6 +49,8 @@ public class CyclicSupplier<T> implements Supplier<T> {
     private final List<T> objects;
     private final long updateTime;
 
+    private transient int lastIndex;
+
     /**
      * Constructs a cyclic supplier with the given parameters.
      *
@@ -58,30 +60,42 @@ public class CyclicSupplier<T> implements Supplier<T> {
     protected CyclicSupplier(@NotNull List<T> objects, long updateTime) {
         this.objects = objects;
         this.updateTime = updateTime;
+        this.lastIndex = getCurrentIndex();
     }
 
     /**
      * Get the current object based on the current time and the update time.
-     * If the list is empty, it will return null.
      *
      * @return the current object or null if the list is empty.
+     * @throws IndexOutOfBoundsException if the current list is empty.
      */
     @Override
     public T get() {
-        if (this.objects.isEmpty()) {
-            return null;
-        }
-        return this.objects.get((int) ((System.currentTimeMillis() / this.updateTime) % this.objects.size()));
+        return this.objects.get((this.lastIndex = getCurrentIndex()));
     }
 
     /**
-     * Get the current object as an {@link Optional}.
+     * Get the current object based on the current time and the update time.<br>
+     * If the current list is empty, an empty {@link Optional} is return.
      *
      * @return the current object as an {@link Optional}.
      */
     @NotNull
     public Optional<T> getOptional() {
-        return Optional.ofNullable(get());
+        if (this.objects.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(get());
+    }
+
+    /**
+     * Get the list of objects that are being rotated.
+     *
+     * @return a list of objects.
+     */
+    @NotNull
+    public List<T> getObjects() {
+        return objects;
     }
 
     /**
@@ -102,5 +116,23 @@ public class CyclicSupplier<T> implements Supplier<T> {
      */
     public long getTime(@NotNull TimeUnit unit) {
         return TimeUnit.MILLISECONDS.convert(this.updateTime, unit);
+    }
+
+    /**
+     * Get the current index based on the current time and the update time.
+     *
+     * @return the current index.
+     */
+    public int getCurrentIndex() {
+        return (int) ((System.currentTimeMillis() / this.updateTime) % this.objects.size());
+    }
+
+    /**
+     * Get the last index that was served.
+     *
+     * @return the last index.
+     */
+    public int getLastIndex() {
+        return lastIndex;
     }
 }
