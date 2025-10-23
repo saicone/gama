@@ -4,6 +4,8 @@ plugins {
     id 'java-library'
 }
 
+description = 'Gama'
+
 idea {
     module {
         downloadJavadoc = true
@@ -28,6 +30,8 @@ compileJava {
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+    withJavadocJar()
 }
 
 apply from: "$rootDir/gradle/publish-config.gradle"
