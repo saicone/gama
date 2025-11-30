@@ -205,10 +205,14 @@ public class Z85 {
                        | ((b3 & 0xFFL) << 8)
                        | (b4 & 0xFFL);
 
-            long c4 = value % 85L; value /= 85L;
-            long c3 = value % 85L; value /= 85L;
-            long c2 = value % 85L; value /= 85L;
-            long c1 = value % 85L; value /= 85L;
+            long c4 = value % 85L;
+            value /= 85L;
+            long c3 = value % 85L;
+            value /= 85L;
+            long c2 = value % 85L;
+            value /= 85L;
+            long c1 = value % 85L;
+            value /= 85L;
             long c0 = value;
 
             out[outPos++] = ALPHABET.charAt((int) c0);
