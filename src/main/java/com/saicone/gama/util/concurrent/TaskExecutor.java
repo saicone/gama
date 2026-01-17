@@ -4,7 +4,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -74,6 +78,70 @@ public interface TaskExecutor<T> extends Closeable {
             thread.interrupt();
         }
     };
+
+    /**
+     * Creates a TaskExecutor from a ScheduledExecutorService.
+     *
+     * @param scheduledExecutor the scheduled executor service.
+     * @return a newly generated TaskExecutor.
+     */
+    @NotNull
+    static TaskExecutor<Future<?>> from(@NotNull ScheduledExecutorService scheduledExecutor) {
+        return new TaskExecutor<Future<?>>() {
+            @Override
+            public @NotNull Future<?> execute(@NotNull Runnable command) {
+                command.run();
+                return CompletableFuture.completedFuture(null);
+            }
+
+            @Override
+            public @NotNull Future<?> execute(@NotNull Runnable command, long delay, @NotNull TimeUnit unit) {
+                return scheduledExecutor.schedule(command, delay, unit);
+            }
+
+            @Override
+            public @NotNull Future<?> execute(@NotNull Runnable command, long delay, long period, @NotNull TimeUnit unit) {
+                return scheduledExecutor.scheduleAtFixedRate(command, delay, period, unit);
+            }
+
+            @Override
+            public void cancel(@NotNull Future<?> future) {
+                future.cancel(false);
+            }
+        };
+    }
+
+    /**
+     * Creates a TaskExecutor from an ExecutorService and a ScheduledExecutorService.
+     *
+     * @param executor the executor service.
+     * @param scheduledExecutor the scheduled executor service.
+     * @return a newly generated TaskExecutor.
+     */
+    @NotNull
+    static TaskExecutor<Future<?>> from(@NotNull ExecutorService executor, @NotNull ScheduledExecutorService scheduledExecutor) {
+        return new TaskExecutor<Future<?>>() {
+            @Override
+            public @NotNull Future<?> execute(@NotNull Runnable command) {
+                return executor.submit(command);
+            }
+
+            @Override
+            public @NotNull Future<?> execute(@NotNull Runnable command, long delay, @NotNull TimeUnit unit) {
+                return scheduledExecutor.schedule(() -> executor.execute(command), delay, unit);
+            }
+
+            @Override
+            public @NotNull Future<?> execute(@NotNull Runnable command, long delay, long period, @NotNull TimeUnit unit) {
+                return scheduledExecutor.scheduleAtFixedRate(() -> executor.execute(command), delay, period, unit);
+            }
+
+            @Override
+            public void cancel(@NotNull Future<?> future) {
+                future.cancel(false);
+            }
+        };
+    }
 
     /**
      * Executes the given command at some time in the future.<br>
