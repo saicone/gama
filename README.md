@@ -34,7 +34,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.saicone:gama:1.0.1'
+    implementation 'com.saicone:gama:1.0.2'
 }
 ```
 
@@ -46,7 +46,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.saicone:gama:1.0.1")
+    implementation("com.saicone:gama:1.0.2")
 }
 ```
 
@@ -57,7 +57,7 @@ pom.xml
     <dependency>
         <groupId>com.saicone</groupId>
         <artifactId>gama</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
         <scope>compile</scope>
     </dependency>
 </dependencies>
