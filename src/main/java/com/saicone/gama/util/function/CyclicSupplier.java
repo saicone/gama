@@ -89,6 +89,22 @@ public class CyclicSupplier<T> implements Supplier<T> {
     }
 
     /**
+     * Get the latest updated object based on the current time and the update time.<br>
+     * If the current index still the same, an empty {@link Optional} is return.
+     *
+     * @return the updated object as an {@link Optional}.
+     */
+    @NotNull
+    public Optional<T> getUpdated() {
+        final int currentIndex = getCurrentIndex();
+        if (this.lastIndex == currentIndex) {
+            return Optional.empty();
+        }
+        this.lastIndex = currentIndex;
+        return Optional.of(this.objects.get(currentIndex));
+    }
+
+    /**
      * Get the list of objects that are being rotated.
      *
      * @return a list of objects.
