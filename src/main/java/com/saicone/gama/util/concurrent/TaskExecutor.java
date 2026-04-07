@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -179,6 +180,32 @@ public interface TaskExecutor<T> extends Closeable {
      */
     @NotNull
     T execute(@NotNull Runnable command, long delay, long period, @NotNull TimeUnit unit);
+
+    /**
+     * Executes the given command after the time delay has passed.
+     *
+     * @param command the runnable task.
+     * @param delay   the duration delay to pass before the task should be executed.
+     * @return        a task type that can be cancelled.
+     */
+    @NotNull
+    default T execute(@NotNull Runnable command, @NotNull Duration delay) {
+        return execute(command, delay.toMillis(), TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Executes the given command after the initial delay has passed,
+     * and then periodically executed with the specified period.
+     *
+     * @param command the runnable task.
+     * @param delay   the duration delay to pass before the first execution of the task.
+     * @param period  the duration between task executions after the first execution of the task.
+     * @return        a task type that can be cancelled.
+     */
+    @NotNull
+    default T execute(@NotNull Runnable command, @NotNull Duration delay, @NotNull Duration period) {
+        return execute(command, delay.toMillis(), period.toMillis(), TimeUnit.MILLISECONDS);
+    }
 
     /**
      * Cancel a task type that was created by this executor.
